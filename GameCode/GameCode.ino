@@ -8,10 +8,12 @@
  * -- you may need to change the button thresholds
  */
 
-boolean ledFeedback =   true;       // play patterns on the LED?
+const boolean ledFeedback =   false;       // play tile patterns on the LED?
+const boolean ledMorse =      true;        // morse code?
+const int ledMaxBrightness =  5;           // how bright can the LED be?
 
-const int width =       20;         // width of the level
-const int height =      20;         // ditto height
+const int width =             14;         // width of the level
+const int height =            14;         // ditto height
 
 // level stored as 2D array
 byte level[height][width] = {
@@ -32,18 +34,19 @@ byte level[height][width] = {
 };
 
 // player coordinates
-const int startX =    5;
-const int startY =    12;
-char prevDir =        ' ';      // store previous button state (prevents retriggering)
+const int startX =        5;
+const int startY =        12;
+char prevDir =            ' ';      // store previous button state (prevents retriggering)
 int x, y;
+long prevMillis =         0;
 
 // pins
-const int motor =     0;        // ATtiny: 0, Arduino: 13
-const int buttons =   3;        // ATtiny: 3, Arduino 0
-const int led =       1;        // on "fancy badges" only
+const int motor =         0;        // ATtiny: 0, Arduino: 13
+const int buttons =       3;        // ATtiny: 3, Arduino 0
+const int led =           1;        // on "fancy badges" only
 
 // intro to be played as morse code at the start
-boolean morseIntro =  true;     // false = do not play
+boolean morseIntro =  false;     // false = do not play
 
 // "you have been blinded and thrown in a dungeon..."
 char intro[] = { "-.-- --- ..- .... .- ...- . -... . . -. -... .-.. .. -. -.. . -.. .- -. -.. - .... .-. --- .-- -. .. -. .- -.. ..- -. --. . --- -. .-.-.-" };
@@ -65,6 +68,11 @@ void setup() {
 
   // play that intro, please
   if (morseIntro) morseCode(intro, sizeof(intro));
+
+  // LED as power indicator, if not being used for feedback
+  if (ledFeedback == false) {
+//    analogWrite(led, 5);
+  }
 }
 
 
@@ -75,7 +83,8 @@ void loop() {
     // printLevel();
   }
   prevDir = dir;
-  
+
+  // delay a bit for smoother play
   delay(refreshRate);
 }
 

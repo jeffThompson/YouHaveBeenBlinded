@@ -33,11 +33,12 @@ void morseCode(char text[], int len) {
     // DOT
     if (text[c] == '.') {
       analogWrite(motor, morseIntensity);
-      if (ledFeedback) {
+      if (ledMorse) {
         digitalWrite(led, HIGH);
+//          analogWrite(led, ledMaxBrightness);
       }
       delay(dot);
-      if (ledFeedback) {
+      if (ledMorse) {
         digitalWrite(led, LOW);
         delay(20);
       }
@@ -46,11 +47,12 @@ void morseCode(char text[], int len) {
     // DASH
     else if (text[c] == '-') {
       analogWrite(motor, morseIntensity);
-      if (ledFeedback) {
+      if (ledMorse) {
         digitalWrite(led, HIGH);
+//          analogWrite(led, ledMaxBrightness);
       }
       delay(dash);
-      if (ledFeedback) {
+      if (ledMorse) {
         digitalWrite(led, LOW);
         delay(20);
       }
