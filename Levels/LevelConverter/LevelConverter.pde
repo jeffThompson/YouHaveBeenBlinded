@@ -22,6 +22,8 @@ LEVEL CONVERTER
  
  int resizeFactor =   30;                  // scale redrawn level onscreen
  
+ int startX, startY;
+ 
  
  void settings() {
    size(imgWidth*resizeFactor, imgHeight*resizeFactor);
@@ -35,13 +37,16 @@ void setup() {
   PImage img = loadImage("../" + levelFile);
   println("Level dimensions: " + img.width + " x " + img.height);
 
-  // store level as array of strings (plus the start and end { };
-  String[] level = new String[img.height + 1];
-  level[0] = "byte level[height][width] = {";
+  // store level as array of strings
+  String[] level = new String[img.height + 2];
+  
+  level[0] = "const int width = " + img.width + ";" + "\n" +
+             "const int height = " + img.height + ";\n\n" +
+             "byte level[height][width] = {";
 
   // load image pixels and iterate
   img.loadPixels();
-  for (int y = 1; y<img.height; y++) {
+  for (int y = 0; y<img.height; y++) {
 
     // start each row with { then go through row's px 
     String row = "  {";
@@ -54,6 +59,8 @@ void setup() {
       }
       else if (c == color(255, 0, 0)) {       // player (print position, set to floor)
         row += "0";
+        startX = x;
+        startY = y;
         println("Player start:     " + x + ", " + y);
       }
       else if (c == color(0)) {               // wall
@@ -85,7 +92,7 @@ void setup() {
         }
 
         // add to the array and reset the row
-        level[y] = row;
+        level[y+1] = row;
         row = "{";
       }
 
@@ -98,7 +105,10 @@ void setup() {
   img.updatePixels();
 
   // finish the array and save to text file
-  level[level.length-1] = "};";
+  level[level.length-1] = "};" + "\n\n" + 
+                          "const int startX = " + startX + ";" + "\n" +
+                          "const int startY = " + startY + ";";
+  
   saveStrings("../level.txt", level);
 
   // display the level!
